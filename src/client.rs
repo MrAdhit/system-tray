@@ -86,14 +86,14 @@ impl Client {
     /// If the initialization fails for any reason,
     /// for example if unable to connect to the bus,
     /// this method will return an error.
-    pub async fn new(service_name: &str) -> crate::error::Result<Self> {
+    pub async fn new(well_known_name: &str) -> crate::error::Result<Self> {
         let (tx, rx) = broadcast::channel(32);
 
         // first start server...
         let watcher = StatusNotifierWatcher::new();
 
         let connection = ConnectionBuilder::session()?
-            .name("org.kde.StatusNotifierWatcher")?
+            .name(well_known_name)?
             .serve_at("/StatusNotifierWatcher", watcher)?
             .build()
             .await?;
@@ -102,9 +102,8 @@ impl Client {
         let watcher_proxy = StatusNotifierWatcherProxy::new(&connection).await?;
 
         // register a host on the watcher to declare we want to watch items
-        let service_name = format!("StatusNotifierHost-{service_name}");
         watcher_proxy
-            .register_status_notifier_host(&service_name)
+            .register_status_notifier_host(&well_known_name)
             .await?;
 
         let items = Arc::new(Mutex::new(HashMap::new()));
