@@ -12,5 +12,5 @@ keywords = ["statusnotifieritem", "dbusmenu", "tokio", "tray"]
 zbus = "3.15.2"
 tracing = "0.1.40"
 serde = { version = "1.0.197", features = ["derive"] }
-tokio = { version = "1.36.0", features = ["rt", "sync", "macros"] }
+tokio = { version = "1.36.0", features = ["rt", "rt-multi-thread", "sync", "macros"] }
 thiserror = "1.0.58"
